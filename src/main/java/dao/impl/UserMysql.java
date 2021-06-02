@@ -4,6 +4,7 @@ import dao.UserDAO;
 import model.User;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public class UserMysql implements UserDAO {
@@ -64,8 +65,45 @@ public class UserMysql implements UserDAO {
 
     @Override
     public List<User> findAll() {
-        System.out.println("retornou uma lista");
-        return null;
+
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        String sql = "SELECT * FROM users";
+        List<User> users = new ArrayList<>();
+
+        try {
+            stmt = conn.prepareStatement(sql);
+
+            //Executa a ação de consulta e atrubui o valor em um ResultSet
+            rs = stmt.executeQuery();
+
+            //Percorre a tabela user enquanto houver linhas
+            while (rs.next()) {
+                //Mapeamento da tabela user para o modelo de orientado a objetos
+                User user = new User();
+                user.setId(rs.getInt("id"));
+                user.setFullName(rs.getString("fullname"));
+                user.setPhone(rs.getString("phone"));
+                user.setEmail(rs.getString("email"));
+
+                //Adiciona o objeto instanciado na lista
+                users.add(user);
+            }
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        } finally {
+            try {
+                if (rs != null)  rs.close();
+                if (stmt != null) stmt.close();
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+        }
+
+
+
+        return users;
     }
 
     @Override
