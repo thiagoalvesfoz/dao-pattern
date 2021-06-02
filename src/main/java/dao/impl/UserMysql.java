@@ -94,7 +94,7 @@ public class UserMysql implements UserDAO {
             throwables.printStackTrace();
         } finally {
             try {
-                if (rs != null)  rs.close();
+                if (rs != null) rs.close();
                 if (stmt != null) stmt.close();
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
@@ -102,12 +102,49 @@ public class UserMysql implements UserDAO {
         }
 
 
-
         return users;
     }
 
     @Override
     public User findById(int id) {
+
+        // Primeiro passo - organizar os dados que serão reutilizados
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        String sql = "SELECT * FROM users WHERE id = ?";
+
+        try {
+            // preparo uma conexão
+            stmt = conn.prepareStatement(sql);
+
+            // injetando o valor do id no sql
+            stmt.setInt(1, id);
+
+            // AÇÃO - executar a consulta
+            rs = stmt.executeQuery(); //devole a tabela com os registros (se encontrar)
+
+            if (rs.next()) {
+                User user = new User();
+                user.setId(rs.getInt("id"));
+                user.setPhone(rs.getString("phone"));
+                user.setEmail(rs.getString("email"));
+                user.setFullName(rs.getString("fullname"));
+
+                return user;
+            }
+
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        } finally {
+            try {
+                if (rs != null) rs.close();
+                if (stmt != null) stmt.close();
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+        }
+
         return null;
     }
 
