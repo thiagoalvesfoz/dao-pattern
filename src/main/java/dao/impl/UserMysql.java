@@ -80,11 +80,7 @@ public class UserMysql implements UserDAO {
             //Percorre a tabela user enquanto houver linhas
             while (rs.next()) {
                 //Mapeamento da tabela user para o modelo de orientado a objetos
-                User user = new User();
-                user.setId(rs.getInt("id"));
-                user.setFullName(rs.getString("fullname"));
-                user.setPhone(rs.getString("phone"));
-                user.setEmail(rs.getString("email"));
+                User user = getInstanceUser(rs);
 
                 //Adiciona o objeto instanciado na lista
                 users.add(user);
@@ -124,13 +120,7 @@ public class UserMysql implements UserDAO {
             rs = stmt.executeQuery(); //devole a tabela com os registros (se encontrar)
 
             if (rs.next()) {
-                User user = new User();
-                user.setId(rs.getInt("id"));
-                user.setPhone(rs.getString("phone"));
-                user.setEmail(rs.getString("email"));
-                user.setFullName(rs.getString("fullname"));
-
-                return user;
+                return getInstanceUser(rs);
             }
 
 
@@ -177,5 +167,15 @@ public class UserMysql implements UserDAO {
             }
 
         }
+    }
+
+    private User getInstanceUser(ResultSet rs) throws SQLException {
+        User user = new User();
+        user.setId(rs.getInt("id"));
+        user.setPhone(rs.getString("phone"));
+        user.setEmail(rs.getString("email"));
+        user.setFullName(rs.getString("fullname"));
+
+        return user;
     }
 }
