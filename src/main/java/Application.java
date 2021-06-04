@@ -27,5 +27,13 @@ public class Application {
         // cenário 3 - buscar um usuário
         User user = userDAO.findById(client.getId());
         System.out.println("findById ---> " + user);
+
+        // cenário 4 - deletar um usuário
+        userDAO.deleteById(user.getId());
+        users = userDAO.findAll();
+        for (User u : users) {
+            System.out.println("---> " + u);
+        }
+
     }
 }

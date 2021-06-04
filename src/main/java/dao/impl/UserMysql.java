@@ -151,5 +151,31 @@ public class UserMysql implements UserDAO {
     @Override
     public void deleteById(int id) {
         System.out.println("usuário deletado");
+
+        PreparedStatement stmt = null;
+
+        String sql = "DELETE FROM users WHERE id = ? ";
+
+        try {
+            stmt = conn.prepareStatement(sql);
+
+            stmt.setInt(1, id);
+
+            int affectedRows = stmt.executeUpdate();
+
+            if (affectedRows == 0) {
+                throw new SQLException("unable to delete user");
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (stmt != null) stmt.close();
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+
+        }
     }
 }
